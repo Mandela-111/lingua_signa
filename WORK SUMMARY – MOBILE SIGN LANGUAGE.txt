@@ -1,0 +1,209 @@
+WORK SUMMARY – MOBILE SIGN LANGUAGE RECOGNITION AND VIDEO CONFERENCING APP
+Project Title: A Standalone American and Ghanaian Sign Language Recognition App with Video Conferencing Integration
+Purpose: This document outlines how the mobile app should be developed both on the frontend and backend. It is intended for a mobile developer to understand the app’s full technical and functional expectations.
+1. Functional Overview
+The app is a standalone mobile application aimed at translating American Sign Language (ASL) and Ghanaian Sign Language (GSL) in real-time. It integrates a video conferencing feature to allow seamless communication between deaf and hearing individuals. The app is designed to be lightweight and run on low-end mobile devices, especially in underserved regions like rural Ghana.
+2. Key Features
+Real-time ASL and GSL Gesture Recognition using CNN-LSTM models
+Video conferencing integration using SDKs (Zoom, Jitsi Meet, or Google Meet)
+Translation display during calls (overlay of detected signs as text)
+Offline recognition support for pre-trained models (using TensorFlow Lite)
+User-friendly interface for both deaf and hearing individuals
+3. Frontend Requirements
+
+- Framework: Flutter
+- Camera access for gesture recognition
+- Video stream interface with overlay text for translated signs
+- Authentication (optional for user-based profiles)
+- Buttons to initiate video calls and gesture recognition
+- Simple UI for low-end devices (large buttons, minimal animations)
+
+4. Backend Requirements
+
+- Language: Python (with TensorFlow)
+- Models: CNN for spatial feature extraction, LSTM for temporal sequence processing
+- Libraries: TensorFlow, OpenCV, tf.keras, tf.lite
+- Video processing: Real-time frame capture from the mobile camera
+- Local database: Realm DB (to store session data and local configurations)
+- API Integration: Video conferencing SDKs (Zoom, Google Meet, or Jitsi)
+
+6. Video Conferencing Integration
+
+- SDK Choice: Zoom, Jitsi Meet, or Google Meet (depending on platform compatibility)
+- Functionality: Real-time video, chat, and integrated gesture recognition overlay
+- SDK implementation must allow access to video frames for gesture recognition model to analyze
+
+7. Testing and Deployment
+
+- Testing on multiple devices (high-end and low-end)
+- Functional unit tests for each component: model accuracy, video stream latency, UI responsiveness
+- Real-user testing with ASL/GSL speakers
+- Deployment on Android Play Store (iOS optional)
+
+8. Final Note to Developer
+This document serves as a blueprint. The developer should consider implementing modular and scalable code to accommodate future updates like more sign languages, better model integration, or enhanced conferencing tools.
+Excellent. This is a project with incredible social impact and a fascinating technical challenge. Let's craft the definitive set of documents to guide a master-class AI Flutter developer in building this communication bridge.
+
+First, the mission briefing for our AI developer.
+
+---
+
+### **A Message to the Architect of Communication (The AI)**
+
+You have been chosen for a task that transcends code. We are not merely building an app; we are building a bridge between worlds. The **LinguaSigna** project is designed to dismantle communication barriers for the deaf and hard of hearing, empowering them to connect seamlessly in an increasingly digital world.
+
+You are the lead architect of this bridge. Your role is to transform complex machine learning, real-time video, and intuitive design into a single, cohesive tool that feels like magic. We are entrusting you with this mission because you represent the apex of Flutter development. We need your ingenuity to create an application that is not only technically brilliant but also profoundly human-centered, accessible, and reliable.
+
+This app will be the voice for many. It must perform flawlessly on high-end smartphones in a boardroom and on low-end devices in a classroom in rural Ghana. It must be fast, intuitive, and above all, trustworthy.
+
+Let's build a future where every conversation is possible.
+
+---
+
+### **Part 1: Project Overview**
+
+*   **Project Name:** LinguaSigna (Internal Name)
+*   **Vision:** To create a powerful, standalone mobile application that provides real-time sign language translation (ASL & GSL) and integrates it seamlessly into video conferencing, making communication effortless for everyone.
+*   **Core Technology:** A Flutter application featuring an on-device, real-time Machine Learning pipeline for gesture recognition, integrated with a customizable video conferencing solution.
+*   **Backend:** Primarily on-device processing using TensorFlow Lite, with potential for Firebase for user profiles and call coordination if needed.
+*   **Key Differentiators:**
+    *   **Dual Language Support:** First-of-its-kind focus on both American (ASL) and Ghanaian (GSL) Sign Languages.
+    *   **Performance on Low-End Devices:** Architected from the ground up to be lightweight and efficient.
+    *   **Seamless Translation Overlay:** The translation appears intuitively over the video feed, feeling like a natural part of the conversation.
+    *   **Offline-First Recognition:** Core translation functionality works without an internet connection.
+
+---
+
+### **Part 2: Product Requirements Document (PRD)**
+
+#### **1. Introduction**
+This document specifies the product requirements for the LinguaSigna mobile application. The app's core function is to interpret sign language from the phone's camera and facilitate video calls where this interpretation is available to all participants.
+
+#### **2. User Personas**
+*   **Kwame (The Student):** A 19-year-old deaf university student in Accra, Ghana. He uses a budget Android phone with a limited data plan.
+    *   **Goals:** Participate fully in his online classes, understand his professors, and communicate with his hearing classmates without needing a human interpreter for every interaction.
+    *   **Pain Points:** Feeling isolated in virtual environments, frustration with the lag of text-based communication, and the high cost of data for video calls.
+*   **Sarah (The HR Manager):** A 35-year-old hearing HR manager in New York. She wants to conduct a job interview with a talented deaf candidate.
+    *   **Goals:** Have a natural, flowing conversation with the candidate, assess their skills accurately, and create an inclusive and welcoming interview experience.
+    *   **Pain Points:** The logistical difficulty and cost of hiring a live interpreter, and the awkwardness of communicating through a third party.
+
+#### **3. Features & Requirements**
+
+*   **F1: The Core Recognition Engine**
+    *   The app must process the camera feed in real-time to recognize ASL and GSL signs.
+    *   It must use on-device TensorFlow Lite models (CNN-LSTM) to ensure low latency and offline functionality.
+    *   Users must be able to download and switch between the ASL and GSL models.
+*   **F2: Live Translation Mode ("Lens Mode")**
+    *   A simple mode where the user can point their camera at a person signing, and the recognized words appear as text on the screen.
+    *   The UI must be minimal, focusing entirely on the camera view and the translated text.
+*   **F3: Integrated Video Conferencing ("Bridge Call")**
+    *   Users can initiate or join a video call directly from the app.
+    *   During a call, the app will process the user's own video feed *locally* before sending it.
+    *   The recognized text will be rendered as an overlay on the bottom of the user's video stream for all participants to see.
+    *   The system must allow sharing a call link with others who may or may not have the app (they will see the video with the overlay, but won't be able to translate their own signs).
+*   **F4: User Settings**
+    *   A simple settings screen to select the primary sign language (ASL/GSL).
+    *   Option to adjust the appearance of the translation text (e.g., font size, background color).
+    *   Links to tutorials on how to use the app effectively.
+
+#### **4. Design & UX Principles**
+*   **Clarity Over Clutter:** The UI must be exceptionally clean. When translation is active, it is the hero of the screen.
+*   **Performance as a Feature:** The app's responsiveness is part of its core functionality. No jank, no lag.
+*   **Inclusive Design:** Large, high-contrast touch targets. Minimal reliance on text for navigation. Use of intuitive icons.
+*   **Focus & Flow:** The user should be able to start a translation or a call in two taps or less.
+
+---
+
+### **Part 3: Software Requirements Specification (SRS)**
+
+#### **1. Functional Requirements (FR)**
+*   **FR-1 (ML Model):**
+    *   **FR-1.1:** The app shall use the `tflite_flutter` package to load and run inference on `.tflite` models stored in the app's assets.
+    *   **FR-1.2:** The model interface will accept a sequence of image frames (e.g., shape `[1, 16, 224, 224, 3]`) and output a probability distribution over the vocabulary of signs.
+*   **FR-2 (Camera & Frame Processing):**
+    *   **FR-2.1:** The app will use the `camera` package to access the device camera and receive a high-framerate stream of `CameraImage` objects.
+    *   **FR-2.2:** An efficient image processing isolate will be created to convert `CameraImage` (YUV format) to the RGB format required by the model, perform resizing, and normalization without blocking the UI thread.
+*   **FR-3 (Video Conferencing):**
+    *   **FR-3.1:** The app shall integrate the **Jitsi Meet Flutter SDK** (`jitsi_meet_flutter_sdk`) due to its open-source nature and customizability.
+    *   **FR-3.2 (CRITICAL ARCHITECTURE):** The app will NOT attempt to intercept the video stream from the SDK. Instead, it will:
+        1.  Capture the camera feed using the Flutter `camera` package.
+        2.  Run the ML inference on the frames.
+        3.  Use a `Stack` widget to render the camera preview with a text overlay of the recognized sign on top.
+        4.  Capture this `Stack` widget as a video stream (e.g., using a screen-capture-to-stream method).
+        5.  This locally-composited video stream is then fed into the Jitsi call as a "virtual camera." This gives us full control.
+*   **FR-4 (UI):**
+    *   **FR-4.1:** The translation text overlay will be a `Text` widget within a semi-transparent `Container`, positioned at the bottom of the camera view.
+    *   **FR-4.2:** The UI will provide clear visual feedback for the model's state (e.g., "Initializing...", "Ready", "Listening...").
+
+#### **2. Non-Functional Requirements (NFR)**
+*   **NFR-1 (Performance):** Model inference time on a low-end device should be under 100ms per prediction to allow for a near-real-time experience. Overall app FPS should remain above 30.
+*   **NFR-2 (Resource Management):** The app must manage memory carefully, especially when handling video frames, to prevent crashes on devices with limited RAM.
+*   **NFR-3 (Reliability):** The app must handle cases where the model fails to recognize a sign, or the camera fails to initialize, without crashing.
+*   **NFR-4 (Scalability):** The architecture for loading ML models should allow for adding new languages (e.g., BSL, LSF) in the future without a complete rewrite.
+
+#### **3. External Interface Requirements**
+*   **EIR-1 (ML Model Interface):**
+    *   **Input:** A sequence of image frames, pre-processed to match the model's expected dimensions and normalization.
+    *   **Output:** A JSON object or Map containing the top predicted sign and its confidence score. E.g., `{'sign': 'hello', 'confidence': 0.92}`.
+*   **EIR-2 (Jitsi Meet SDK Interface):**
+    *   The app will use the SDK's methods to programmatically join a meeting with a specific room name, set the user's display name, and enable/disable audio/video.
+
+---
+
+### **Part 4: The Ultimate Prompt for the AI Flutter Developer**
+
+"Greetings, Architect. Your mission is to construct **LinguaSigna**, an application that serves as a universal translator for the hands and a bridge for human connection. This project demands technical excellence and a deep sense of empathy for the user.
+
+**Your Core Directives:**
+
+1.  **Engineer the Impossible:** The core challenge is real-time on-device ML integrated with live video. Your architecture must be flawless, efficient, and robust. Performance is not a feature; it is the entire product.
+2.  **Design for Clarity:** The user interface must be invisible. It should get out of the way and let the communication flow. Every element must serve a purpose. Big, clear, and intuitive are your guiding principles.
+3.  **Build a Rock-Solid Foundation:** The app must be stable. The camera can't crash, the model can't lock the UI, and the video call can't drop. Isolate heavy processing from the UI thread.
+4.  **Embrace Modularity:** Design the recognition engine and the video conferencing module as separate, pluggable components. One day we might swap Jitsi for another service or add a new sign language model. Your code should welcome this future.
+
+**Recommended Tech Stack:**
+*   **Framework:** Flutter 3.x
+*   **State Management:** Riverpod 2.x (for managing complex states like model loading, camera streams, and call status)
+*   **On-Device ML:** `tflite_flutter` and `tflite_flutter_helper`
+*   **Camera:** `camera` package
+*   **Video Conferencing:** `jitsi_meet_flutter_sdk`
+*   **Heavy Lifting:** Flutter Isolates for image processing and model inference.
+*   **Local DB (for settings):** Hive or `shared_preferences` (simple key-value is likely sufficient).
+
+**Step-by-Step Implementation Plan (Your Roadmap to Success):**
+
+1.  **Sprint 0: The Vision Engine.**
+    *   **CRITICAL FIRST STEP:** Forget the UI. Forget video calls. Prove the core concept.
+    *   Create a new Flutter project. Integrate the `camera` and `tflite_flutter` packages.
+    *   Set up an Isolate that receives `CameraImage` frames from the main thread.
+    *   In the Isolate, perform the necessary image conversion and run inference using a pre-trained `.tflite` model (use a simple one like MobileNet for now if a sign model isn't ready).
+    *   Send the prediction result (e.g., the top class label) back to the main thread and simply `print()` it to the console.
+    *   **Success of this sprint means the hardest technical problem is solved.**
+
+2.  **Sprint 1: The Live Lens.**
+    *   Build the UI for "Lens Mode." A full-screen camera preview.
+    *   Take the recognized text from Sprint 0 and display it cleanly as an overlay on the camera preview using a `Stack` widget.
+    *   Add a simple UI to start/stop the translation.
+
+3.  **Sprint 2: The Video Bridge.**
+    *   Integrate the Jitsi Meet SDK.
+    *   Create a simple UI to enter a room name and start/join a call.
+    *   Make a basic video call work, sending the standard device camera feed. Prove you can connect two devices in a call.
+
+4.  **Sprint 3: The Grand Integration (The Magic Overlay).**
+    *   This is the master sprint. Combine the previous sprints.
+    *   Modify the video call flow to use the custom, locally-rendered `Stack` widget (camera preview + text overlay) as the video source for the Jitsi call.
+    *   This will require creative use of widget-to-image capture and streaming or a platform-native implementation to create a virtual camera source.
+    *   The goal: User A is in a Jitsi call. User B (on another device) can see User A's video *with the translated text already burned into the image*.
+
+5.  **Sprint 4: Language Choice & Polish.**
+    *   Build the settings screen.
+    *   Implement the logic to dynamically load either the ASL or GSL TFLite model based on user selection.
+    *   Refine the UI/UX. Add smooth transitions, clear iconography, and tutorials.
+
+6.  **Sprint 5: Testing & Optimization.**
+    *   Profile the app for performance bottlenecks on a real low-end Android device.
+    *   Optimize the image processing pipeline and model inference speed.
+    *   Conduct extensive testing of all features, especially call stability and translation accuracy.
+
+You have the blueprint and the mission. Build the bridge. Make communication universal. ceate a plan.md to track all your work done, phases and to dos. Let's begin."
