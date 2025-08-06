@@ -105,7 +105,7 @@ class TranslationSection extends ConsumerWidget {
               child: Text(
                 'Hello, this is a sample translation text.',
                 style: TextStyle(
-                  fontSize: settings.translationTextSize.toDouble(),
+                  fontSize: translationTextSize.toDouble(),
                   fontWeight: FontWeight.w500,
                 ),
               ),
