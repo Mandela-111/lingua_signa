@@ -10,7 +10,11 @@ class TranslationSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final settings = ref.watch(settingsNotifierProvider);
+    // Optimize: Only watch translation-specific fields to minimize rebuilds
+    final isAutoTranslate = ref.watch(settingsNotifierProvider.select((s) => s.isAutoTranslate));
+    final showConfidence = ref.watch(settingsNotifierProvider.select((s) => s.showConfidence));
+    final translationTextSize = ref.watch(settingsNotifierProvider.select((s) => s.translationTextSize));
+    final saveHistory = ref.watch(settingsNotifierProvider.select((s) => s.saveHistory));
     
     return Card(
       child: Padding(
@@ -42,7 +46,7 @@ class TranslationSection extends ConsumerWidget {
             SwitchListTile(
               title: const Text('Auto-translate'),
               subtitle: const Text('Automatically start translation when signs are detected'),
-              value: settings.isAutoTranslate,
+              value: isAutoTranslate,
               onChanged: (value) => ref.read(settingsNotifierProvider.notifier)
                   .updateAutoTranslate(value),
               contentPadding: EdgeInsets.zero,
@@ -54,7 +58,7 @@ class TranslationSection extends ConsumerWidget {
             SwitchListTile(
               title: const Text('Show confidence level'),
               subtitle: const Text('Display accuracy percentage for translations'),
-              value: settings.showConfidence,
+              value: showConfidence,
               onChanged: (value) => ref.read(settingsNotifierProvider.notifier)
                   .updateShowConfidence(value),
               contentPadding: EdgeInsets.zero,
@@ -77,11 +81,11 @@ class TranslationSection extends ConsumerWidget {
                 const Icon(Icons.text_decrease, size: 16),
                 Expanded(
                   child: Slider(
-                    value: settings.translationTextSize.toDouble(),
+                    value: translationTextSize.toDouble(),
                     min: 12,
                     max: 28,
                     divisions: 8,
-                    label: '${settings.translationTextSize}px',
+                    label: '${translationTextSize}px',
                     onChanged: (value) => ref.read(settingsNotifierProvider.notifier)
                         .updateTranslationTextSize(value.round()),
                   ),
@@ -113,7 +117,7 @@ class TranslationSection extends ConsumerWidget {
             SwitchListTile(
               title: const Text('Save translation history'),
               subtitle: const Text('Keep a record of recent translations'),
-              value: settings.saveHistory,
+              value: saveHistory,
               onChanged: (value) => ref.read(settingsNotifierProvider.notifier)
                   .updateSaveHistory(value),
               contentPadding: EdgeInsets.zero,

@@ -10,7 +10,12 @@ class AccessibilitySection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final settings = ref.watch(settingsNotifierProvider);
+    // Optimize: Only watch accessibility-specific fields to minimize rebuilds
+    final highContrast = ref.watch(settingsNotifierProvider.select((s) => s.highContrast));
+    final largeText = ref.watch(settingsNotifierProvider.select((s) => s.largeText));
+    final reduceMotion = ref.watch(settingsNotifierProvider.select((s) => s.reduceMotion));
+    final hapticFeedback = ref.watch(settingsNotifierProvider.select((s) => s.hapticFeedback));
+    final voiceFeedback = ref.watch(settingsNotifierProvider.select((s) => s.voiceFeedback));
     
     return Card(
       child: Padding(
@@ -42,7 +47,7 @@ class AccessibilitySection extends ConsumerWidget {
             SwitchListTile(
               title: const Text('High contrast mode'),
               subtitle: const Text('Improve visibility with enhanced contrast'),
-              value: settings.highContrast,
+              value: highContrast,
               onChanged: (value) => ref.read(settingsNotifierProvider.notifier)
                   .updateHighContrast(value),
               contentPadding: EdgeInsets.zero,
@@ -54,7 +59,7 @@ class AccessibilitySection extends ConsumerWidget {
             SwitchListTile(
               title: const Text('Large text'),
               subtitle: const Text('Increase text size throughout the app'),
-              value: settings.largeText,
+              value: largeText,
               onChanged: (value) => ref.read(settingsNotifierProvider.notifier)
                   .updateLargeText(value),
               contentPadding: EdgeInsets.zero,
@@ -66,7 +71,7 @@ class AccessibilitySection extends ConsumerWidget {
             SwitchListTile(
               title: const Text('Reduce motion'),
               subtitle: const Text('Minimize animations and transitions'),
-              value: settings.reduceMotion,
+              value: reduceMotion,
               onChanged: (value) => ref.read(settingsNotifierProvider.notifier)
                   .updateReduceMotion(value),
               contentPadding: EdgeInsets.zero,
@@ -91,11 +96,11 @@ class AccessibilitySection extends ConsumerWidget {
                 const Text('Off'),
                 Expanded(
                   child: Slider(
-                    value: settings.hapticFeedback.toDouble(),
+                    value: hapticFeedback.toDouble(),
                     min: 0,
                     max: 2,
                     divisions: 2,
-                    label: _getHapticLabel(settings.hapticFeedback),
+                    label: _getHapticLabel(hapticFeedback),
                     onChanged: (value) => ref.read(settingsNotifierProvider.notifier)
                         .updateHapticFeedback(value.round()),
                   ),
@@ -112,7 +117,7 @@ class AccessibilitySection extends ConsumerWidget {
             SwitchListTile(
               title: const Text('Voice feedback'),
               subtitle: const Text('Spoken announcements for important actions'),
-              value: settings.voiceFeedback,
+              value: voiceFeedback,
               onChanged: (value) => ref.read(settingsNotifierProvider.notifier)
                   .updateVoiceFeedback(value),
               contentPadding: EdgeInsets.zero,

@@ -10,7 +10,11 @@ class VideoSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final settings = ref.watch(settingsNotifierProvider);
+    // Optimize: Only watch video-specific fields to minimize rebuilds
+    final joinWithVideo = ref.watch(settingsNotifierProvider.select((s) => s.joinWithVideo));
+    final joinWithAudio = ref.watch(settingsNotifierProvider.select((s) => s.joinWithAudio));
+    final hdVideoQuality = ref.watch(settingsNotifierProvider.select((s) => s.hdVideoQuality));
+    final defaultVideoLayout = ref.watch(settingsNotifierProvider.select((s) => s.defaultVideoLayout));
     
     return Card(
       child: Padding(
@@ -42,7 +46,7 @@ class VideoSection extends ConsumerWidget {
             SwitchListTile(
               title: const Text('Join with video enabled'),
               subtitle: const Text('Turn on camera when joining video calls'),
-              value: settings.joinWithVideo,
+              value: joinWithVideo,
               onChanged: (value) => ref.read(settingsNotifierProvider.notifier)
                   .updateJoinWithVideo(value),
               contentPadding: EdgeInsets.zero,
@@ -54,7 +58,7 @@ class VideoSection extends ConsumerWidget {
             SwitchListTile(
               title: const Text('Join with audio enabled'),
               subtitle: const Text('Turn on microphone when joining video calls'),
-              value: settings.joinWithAudio,
+              value: joinWithAudio,
               onChanged: (value) => ref.read(settingsNotifierProvider.notifier)
                   .updateJoinWithAudio(value),
               contentPadding: EdgeInsets.zero,
@@ -66,7 +70,7 @@ class VideoSection extends ConsumerWidget {
             SwitchListTile(
               title: const Text('HD video quality'),
               subtitle: const Text('Use higher quality video (uses more data)'),
-              value: settings.hdVideoQuality,
+              value: hdVideoQuality,
               onChanged: (value) => ref.read(settingsNotifierProvider.notifier)
                   .updateHdVideoQuality(value),
               contentPadding: EdgeInsets.zero,
@@ -88,7 +92,7 @@ class VideoSection extends ConsumerWidget {
               title: 'Grid View',
               subtitle: 'Equal sized participant windows',
               icon: Icons.grid_view,
-              isSelected: settings.defaultVideoLayout == 'grid',
+              isSelected: defaultVideoLayout == 'grid',
               onTap: () => ref.read(settingsNotifierProvider.notifier)
                   .updateDefaultVideoLayout('grid'),
             ),
@@ -99,7 +103,7 @@ class VideoSection extends ConsumerWidget {
               title: 'Speaker View',
               subtitle: 'Focus on active speaker',
               icon: Icons.person,
-              isSelected: settings.defaultVideoLayout == 'speaker',
+              isSelected: defaultVideoLayout == 'speaker',
               onTap: () => ref.read(settingsNotifierProvider.notifier)
                   .updateDefaultVideoLayout('speaker'),
             ),

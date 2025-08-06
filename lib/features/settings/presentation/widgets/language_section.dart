@@ -11,7 +11,9 @@ class LanguageSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final settings = ref.watch(settingsNotifierProvider);
+    // Optimize: Only watch specific fields to minimize rebuilds
+    final selectedLanguage = ref.watch(settingsNotifierProvider.select((s) => s.selectedLanguage));
+    final isAutoDetectLanguage = ref.watch(settingsNotifierProvider.select((s) => s.isAutoDetectLanguage));
     
     return Card(
       child: Padding(
@@ -41,7 +43,7 @@ class LanguageSection extends ConsumerWidget {
             
             // Language Options
             ...AppLanguage.values.map((language) {
-              final isSelected = language == settings.selectedLanguage;
+              final isSelected = language == selectedLanguage;
               
               return _LanguageOption(
                 language: language,
@@ -57,7 +59,7 @@ class LanguageSection extends ConsumerWidget {
             SwitchListTile(
               title: const Text('Auto-detect language'),
               subtitle: const Text('Automatically identify the sign language being used'),
-              value: settings.isAutoDetectLanguage,
+              value: isAutoDetectLanguage,
               onChanged: (value) => ref.read(settingsNotifierProvider.notifier)
                   .updateAutoDetectLanguage(value),
               contentPadding: EdgeInsets.zero,
