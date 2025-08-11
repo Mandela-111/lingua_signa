@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class SettingsAppBar extends StatelessWidget {
   const SettingsAppBar({
@@ -30,7 +31,10 @@ class SettingsAppBar extends StatelessWidget {
               backgroundColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
               foregroundColor: theme.colorScheme.onSurface,
             ),
-          ),
+          )
+              .animate()
+              .fadeIn(duration: 400.ms)
+              .slideX(begin: -0.3, end: 0),
           
           const SizedBox(width: 12),
           
@@ -41,7 +45,10 @@ class SettingsAppBar extends StatelessWidget {
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
-            ),
+            )
+                .animate(delay: 200.ms)
+                .fadeIn(duration: 500.ms)
+                .slideY(begin: -0.2, end: 0),
           ),
           
           // Reset Button
@@ -52,7 +59,10 @@ class SettingsAppBar extends StatelessWidget {
             style: TextButton.styleFrom(
               foregroundColor: theme.colorScheme.primary,
             ),
-          ),
+          )
+              .animate(delay: 400.ms)
+              .fadeIn(duration: 400.ms)
+              .slideX(begin: 0.3, end: 0),
         ],
       ),
     );

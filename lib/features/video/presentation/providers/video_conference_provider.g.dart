@@ -7,7 +7,7 @@ part of 'video_conference_provider.dart';
 // **************************************************************************
 
 String _$videoConferenceNotifierHash() =>
-    r'a5a3f51296b5a0271b4ecc03227d0d43547c5027';
+    r'7cc0f529bcafd4d9d284fa8eba82ada02e6f8653';
 
 /// See also [VideoConferenceNotifier].
 @ProviderFor(VideoConferenceNotifier)

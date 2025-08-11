@@ -6,6 +6,7 @@ import '../../home/presentation/screens/home_screen.dart';
 import '../../lens/presentation/screens/lens_mode_screen.dart';
 import '../../video/presentation/screens/video_conference_screen.dart';
 import '../../settings/presentation/screens/settings_screen.dart';
+import '../../demo/presentation/screens/demo_dashboard_screen.dart';
 import '../domain/app_routes.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -31,6 +32,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.settings,
         name: AppRoutes.settingsName,
         builder: (context, state) => const SettingsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.demo,
+        name: AppRoutes.demoName,
+        builder: (context, state) => const DemoDashboardScreen(),
       ),
     ],
     errorBuilder: (context, state) => const _ErrorScreen(),

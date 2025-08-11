@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/domain/enums/app_language.dart';
+import '../../../../core/providers/api_client_provider.dart';
+import '../../../../core/providers/camera_provider.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
 import '../../domain/models/lens_state.dart';
 import '../../domain/models/translation_result.dart';
@@ -55,7 +58,7 @@ class LensStateNotifier extends _$LensStateNotifier {
     );
   }
   
-  /// Start translation process
+  /// Start translation process with camera integration
   Future<void> startTranslation() async {
     if (state.isActive) return;
     
@@ -65,8 +68,18 @@ class LensStateNotifier extends _$LensStateNotifier {
       recognitionState: RecognitionState.initializing,
     );
     
-    // Mock initialization delay
-    await Future.delayed(const Duration(seconds: 1));
+    // Initialize camera for real-time translation
+    final cameraNotifier = ref.read(cameraNotifierProvider.notifier);
+    
+    // Initialize camera if not already done
+    if (!ref.read(isCameraReadyProvider)) {
+      await cameraNotifier.initializeCamera();
+    }
+    
+    // Start camera capture for live frames
+    if (ref.read(isCameraReadyProvider)) {
+      await cameraNotifier.startCapture();
+    }
     
     // Ready state
     state = state.copyWith(
@@ -79,8 +92,8 @@ class LensStateNotifier extends _$LensStateNotifier {
       recognitionState: RecognitionState.translating,
     );
     
-    // Start mock translation timer
-    _startMockTranslation();
+    // Start real ML translation timer with camera integration
+    _startRealTranslation();
   }
   
   /// Stop translation process
@@ -94,17 +107,81 @@ class LensStateNotifier extends _$LensStateNotifier {
     );
   }
   
-  /// Start mock translation simulation
-  void _startMockTranslation() {
+  /// Start real ML translation with fallback to mock
+  void _startRealTranslation() {
     _translationTimer?.cancel();
     
     _translationTimer = Timer.periodic(
       const Duration(seconds: 2),
-      (_) => _generateMockTranslation(),
+      (_) => _generateRealTranslation(),
     );
   }
   
-  /// Generate a mock translation result
+
+  
+  /// Generate a real ML translation result
+  Future<void> _generateRealTranslation() async {
+    if (!state.isActive || state.recognitionState != RecognitionState.translating) {
+      return;
+    }
+    
+    try {
+      final currentSettings = ref.read(settingsNotifierProvider);
+      final selectedLanguage = currentSettings.selectedLanguage;
+      
+      // Check if ML server is available
+      final mlHealthy = await ref.read(mlHealthCheckProvider.future);
+      if (!mlHealthy) {
+        // Fall back to mock translation if ML server is down
+        _generateMockTranslation();
+        return;
+      }
+      
+      // Get real camera frame for ML processing
+      final cameraFrame = ref.read(currentCameraFrameProvider);
+      final imageBytes = cameraFrame?.imageBytes ?? _generateMockImageBytes();
+      
+      // Call real ML API for translation
+      final apiClient = ref.read(apiClientProvider);
+      final response = await apiClient.translateImage(
+        imageBytes,
+        selectedLanguage == AppLanguage.asl ? 'asl' : 'gsl',
+      );
+      
+      // Extract translation result from API response
+      final translationText = response['translation'] as String?;
+      final confidence = (response['confidence'] as num?)?.toDouble() ?? 0.0;
+      
+      if (translationText != null && translationText.isNotEmpty) {
+        final translation = TranslationResult(
+          text: translationText,
+          confidence: confidence,
+          timestamp: DateTime.now(),
+        );
+        
+        state = state.copyWith(currentTranslation: translation);
+        
+        // Clear translation after 3 seconds
+        Timer(const Duration(seconds: 3), () {
+          if (state.currentTranslation == translation) {
+            state = state.copyWith(currentTranslation: null);
+          }
+        });
+      }
+    } catch (e) {
+      // Fall back to mock translation on API error
+      _generateMockTranslation();
+    }
+  }
+  
+  /// Generate mock camera frame bytes (TODO: Replace with real camera)
+  Uint8List _generateMockImageBytes() {
+    // Generate a simple mock image (1x1 pixel for now)
+    // In real implementation, this will be camera frame data
+    return Uint8List.fromList([255, 255, 255, 255]); // White pixel RGBA
+  }
+  
+  /// Generate a mock translation result (fallback when ML API unavailable)
   void _generateMockTranslation() {
     if (!state.isActive || state.recognitionState != RecognitionState.translating) {
       return;

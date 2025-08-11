@@ -2,12 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../navigation/presentation/navigation_service.dart';
-import '../widgets/video_app_bar.dart';
-import '../widgets/room_join_view.dart';
-import '../widgets/call_view.dart';
+import '../widgets/enhanced_video_conference_view.dart';
 import '../providers/video_conference_provider.dart';
 import '../../domain/enums/call_state.dart';
-import '../../domain/models/video_conference_state.dart';
 
 class VideoConferenceScreen extends ConsumerWidget {
   const VideoConferenceScreen({super.key});
@@ -33,31 +30,14 @@ class VideoConferenceScreen extends ConsumerWidget {
         }
       },
       child: Scaffold(
-        backgroundColor: videoState.callState == CallState.connected 
-            ? Colors.black 
-            : null,
+        backgroundColor: Colors.black,
         body: SafeArea(
-          child: Column(
+          child: Stack(
             children: [
-              // App Bar
-              VideoAppBar(
-                onBack: () async {
-                  if (videoState.callState == CallState.connected ||
-                      videoState.callState == CallState.connecting) {
-                    await ref.read(videoConferenceNotifierProvider.notifier).leaveCall();
-                  }
-                  
-                  if (context.mounted) {
-                    navigationService.goBack(context);
-                  }
-                },
-                callState: videoState.callState,
-              ),
+              // Enhanced Video Conference View (full screen)
+              const EnhancedVideoConferenceView(),
               
-              // Main Content
-              Expanded(
-                child: _buildMainContent(videoState),
-              ),
+              // Optional back button overlay (handled by enhanced view)
             ],
           ),
         ),
@@ -65,54 +45,4 @@ class VideoConferenceScreen extends ConsumerWidget {
     );
   }
   
-  Widget _buildMainContent(VideoConferenceState videoState) {
-    switch (videoState.callState) {
-      case CallState.idle:
-        return const RoomJoinView();
-      case CallState.connecting:
-      case CallState.connected:
-        return const CallView();
-      case CallState.error:
-        return _ErrorView(error: videoState.error);
-    }
-  }
-}
-
-class _ErrorView extends ConsumerWidget {
-  const _ErrorView({required this.error});
-  
-  final String? error;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Colors.red,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Connection Error',
-            style: theme.textTheme.headlineSmall,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            error ?? 'An unexpected error occurred',
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 24),
-          FilledButton(
-            onPressed: () => ref.read(videoConferenceNotifierProvider.notifier).reset(),
-            child: const Text('Try Again'),
-          ),
-        ],
-      ),
-    );
-  }
 }

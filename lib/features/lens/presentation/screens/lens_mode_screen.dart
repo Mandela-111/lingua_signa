@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../navigation/presentation/navigation_service.dart';
-import '../widgets/lens_app_bar.dart';
-import '../widgets/camera_view.dart';
-import '../widgets/lens_controls.dart';
+import '../widgets/enhanced_camera_view.dart';
 import '../providers/lens_state_provider.dart';
 
 class LensModeScreen extends ConsumerWidget {
@@ -31,25 +29,33 @@ class LensModeScreen extends ConsumerWidget {
       child: Scaffold(
         backgroundColor: Colors.black,
         body: SafeArea(
-          child: Column(
+          child: Stack(
             children: [
-              // Status Bar
-              LensAppBar(
-                onBack: () {
-                  if (lensState.isActive) {
-                    ref.read(lensStateNotifierProvider.notifier).stopTranslation();
-                  }
-                  navigationService.goBack(context);
-                },
-              ),
+              // Enhanced Camera View (full screen)
+              const EnhancedCameraView(),
               
-              // Camera View
-              const Expanded(
-                child: CameraView(),
+              // Back button overlay
+              Positioned(
+                top: 16,
+                left: 16,
+                child: IconButton(
+                  onPressed: () {
+                    if (lensState.isActive) {
+                      ref.read(lensStateNotifierProvider.notifier).stopTranslation();
+                    }
+                    navigationService.goBack(context);
+                  },
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
+                    size: 28,
+                  ),
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.black.withValues(alpha: 0.5),
+                    padding: const EdgeInsets.all(12),
+                  ),
+                ),
               ),
-              
-              // Controls
-              const LensControls(),
             ],
           ),
         ),

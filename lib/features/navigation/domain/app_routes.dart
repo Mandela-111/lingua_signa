@@ -4,12 +4,14 @@ class AppRoutes {
   static const String lens = '/lens';
   static const String video = '/video';
   static const String settings = '/settings';
+  static const String demo = '/demo';
   
   // Route names
   static const String homeName = 'home';
   static const String lensName = 'lens';
   static const String videoName = 'video';
   static const String settingsName = 'settings';
+  static const String demoName = 'demo';
   
   // Private constructor to prevent instantiation
   AppRoutes._();

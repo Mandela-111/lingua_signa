@@ -6,7 +6,7 @@ part of 'lens_state_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$lensStateNotifierHash() => r'a6974b16a192429a447603abbafe254ba040f55b';
+String _$lensStateNotifierHash() => r'd4b881fb5ace7cc6cea62977b34be027981978dd';
 
 /// See also [LensStateNotifier].
 @ProviderFor(LensStateNotifier)

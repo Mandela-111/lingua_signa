@@ -5,6 +5,7 @@ import '../widgets/home_header.dart';
 import '../widgets/main_actions.dart';
 import '../widgets/quick_stats.dart';
 import '../widgets/settings_access.dart';
+import '../widgets/demo_access.dart';
 import '../widgets/footer_info.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -34,6 +35,11 @@ class HomeScreen extends ConsumerWidget {
             // Settings Access
             const SliverToBoxAdapter(
               child: SettingsAccess(),
+            ),
+            
+            // Demo Access
+            const SliverToBoxAdapter(
+              child: DemoAccess(),
             ),
             
             // Footer Info

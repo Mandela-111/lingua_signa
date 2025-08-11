@@ -29,6 +29,11 @@ class NavigationService {
     context.pushNamed(AppRoutes.settingsName);
   }
   
+  /// Navigate to demo dashboard screen
+  void goToDemo(BuildContext context) {
+    context.pushNamed(AppRoutes.demoName);
+  }
+  
   /// Go back to previous screen or home if no previous screen
   void goBack(BuildContext context) {
     if (context.canPop()) {

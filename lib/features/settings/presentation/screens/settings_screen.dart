@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../navigation/presentation/navigation_service.dart';
 import '../widgets/settings_app_bar.dart';
@@ -15,12 +16,12 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final navigationService = ref.watch(navigationServiceProvider);
-    
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
-        
+
         if (context.mounted) {
           navigationService.goBack(context);
         }
@@ -30,14 +31,10 @@ class SettingsScreen extends ConsumerWidget {
           child: Column(
             children: [
               // App Bar
-              SettingsAppBar(
-                onBack: () => navigationService.goBack(context),
-              ),
-              
+              SettingsAppBar(onBack: () => navigationService.goBack(context)),
+
               // Settings Content
-              const Expanded(
-                child: _SettingsContent(),
-              ),
+              const Expanded(child: _SettingsContent()),
             ],
           ),
         ),
@@ -51,34 +48,49 @@ class _SettingsContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SingleChildScrollView(
-      padding: EdgeInsets.all(16),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Language Settings
-          LanguageSection(),
-          
-          SizedBox(height: 24),
-          
+          LanguageSection()
+              .animate(delay: 100.ms)
+              .fadeIn(duration: 500.ms)
+              .slideY(begin: 0.2, end: 0),
+
+          const SizedBox(height: 24),
+
           // Translation Settings
-          TranslationSection(),
-          
-          SizedBox(height: 24),
-          
+          TranslationSection()
+              .animate(delay: 200.ms)
+              .fadeIn(duration: 500.ms)
+              .slideY(begin: 0.2, end: 0),
+
+          const SizedBox(height: 24),
+
           // Video Settings
-          VideoSection(),
-          
-          SizedBox(height: 24),
-          
+          VideoSection()
+              .animate(delay: 300.ms)
+              .fadeIn(duration: 500.ms)
+              .slideY(begin: 0.2, end: 0),
+
+          const SizedBox(height: 24),
+
           // Accessibility Settings
-          AccessibilitySection(),
-          
-          SizedBox(height: 24),
-          
+          AccessibilitySection()
+              .animate(delay: 400.ms)
+              .fadeIn(duration: 500.ms)
+              .slideY(begin: 0.2, end: 0),
+
+          const SizedBox(height: 24),
+
           // About Section
-          AboutSection(),
-          
+          AboutSection()
+              .animate(delay: 500.ms)
+              .fadeIn(duration: 500.ms)
+              .slideY(begin: 0.2, end: 0),
+
           SizedBox(height: 40),
         ],
       ),
